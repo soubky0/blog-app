@@ -7,20 +7,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Role {
-  USER
-  ADMIN
-}
-
 model User {
   id       Int       @id @default(autoincrement())
   username String    @unique
   email    String    @unique
   password String
   role     Role      @default(USER)
-
-  posts    Post[]
   comments Comment[]
+  posts    Post[]
 }
 
 model Post {
@@ -29,9 +23,8 @@ model Post {
   content   String
   createdAt DateTime  @default(now())
   userId    Int
-
-  user      User      @relation(fields: [userId], references: [id])
   comments  Comment[]
+  user      User      @relation(fields: [userId], references: [id])
 }
 
 model Comment {
@@ -40,7 +33,11 @@ model Comment {
   createdAt DateTime @default(now())
   postId    Int
   userId    Int
-
   post      Post     @relation(fields: [postId], references: [id])
   user      User     @relation(fields: [userId], references: [id])
+}
+
+enum Role {
+  USER
+  ADMIN
 }
