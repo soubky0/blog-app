@@ -1,18 +1,17 @@
 meta {
-  name: updatePost
+  name: updateComment
   type: http
   seq: 4
 }
 
 put {
-  url: http://localhost:8080/api/posts/3
+  url: http://localhost:8080/api/comments/4
   body: json
   auth: none
 }
 
 body:json {
   {
-    "title": "edited post",
     "content": "hello world2"
   }
 }
