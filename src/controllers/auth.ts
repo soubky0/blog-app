@@ -8,11 +8,11 @@ import {HttpError} from "../middleware/errorHandler";
 export const register = async (req: Request, res: Response, next: NextFunction) => {
     const { username, email, password } = req.body;
     if (!username) {
-        return res.status(400).send({ error: "username is required" })
+        return next(new HttpError("Username is required!", 400));
     } else if (!email) {
-        return res.status(400).send({ error: "email is required" })
+        return next(new HttpError("Email is required!", 400));
     } else if (!password) {
-        return res.status(400).send({ error: "password is required" })
+        return next(new HttpError("Password is required!", 400));
     } else {
         try {
             const existingUser = await prisma.user.findFirst({
@@ -20,7 +20,7 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
                     OR: [{ username }, { email }]}});
 
             if (existingUser) {
-                return res.status(400).json({ error: 'Username or email already exists' });
+                return next(new HttpError("User already exists!", 400));
             }
             const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -29,8 +29,7 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
             });
             res.status(201).json({ id: user.id, username: user.username, email: user.email });
         } catch (error) {
-            console.error('Error registering user:', error);
-            res.status(500).json({ error: 'Internal server error' });
+            next(error)
         }
     }
 }
