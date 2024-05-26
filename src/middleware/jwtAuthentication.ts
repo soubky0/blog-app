@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import {JwtPayload} from "jsonwebtoken";
 import { JWT_SECRET } from '../secrets';
 
 export const jwtAuthentication = (req: Request, res: Response, next: NextFunction) => {
@@ -9,7 +10,9 @@ export const jwtAuthentication = (req: Request, res: Response, next: NextFunctio
         return res.status(401).json({ error: 'Authentication token is missing' });
     }
     try {
-        req.body = jwt.verify(token, JWT_SECRET);
+        const decode: JwtPayload = <JwtPayload> jwt.verify(token, JWT_SECRET);
+        req.body.userId = decode["userId"]
+        req.body.userRole = decode["userRole"]
         next();
     } catch (error) {
         console.error('JWT verification error:', error);

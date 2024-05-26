@@ -1,0 +1,18 @@
+meta {
+  name: updatePost
+  type: http
+  seq: 4
+}
+
+delete {
+  url: http://localhost:8080/api/posts/3
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "title": "edited post",
+    "content": "hello world2"
+  }
+}

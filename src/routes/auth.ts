@@ -52,7 +52,7 @@ authRouter.post('/login', async (req, res) => {
             const isAuthenticated = await bcrypt.compare(password, user.password)
             if (!isAuthenticated)
                 return res.status(401).send({error: 'Wrong Password!'})
-            const token = jwt.sign({username: user.username}, JWT_SECRET, {expiresIn: '15m'});
+            const token = jwt.sign({ userId: user.id, userRole: user.role }, JWT_SECRET, {expiresIn: '15m'});
             res = res.cookie('token', token);
             return res.status(200).json({token})
         } catch (error) {

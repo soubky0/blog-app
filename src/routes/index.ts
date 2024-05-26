@@ -1,11 +1,13 @@
 import { Router } from 'express';
 import usersRouter from './users';
 import authRouter from "./auth";
-import {jwtAuthentication} from "../middleware/jwtAuthentication";
+import postsRouter from "./posts";
+
 
 const rootRouter: Router = Router();
 
 rootRouter.use('/', authRouter);
-rootRouter.use('/users',jwtAuthentication, usersRouter);
+rootRouter.use('/users', usersRouter);
+rootRouter.use('/posts', postsRouter)
 
 export default rootRouter;
