@@ -8,6 +8,7 @@ export class HttpError extends Error {
     }
 }
 
+
 export const errorHandler = (err: HttpError, req: Request, res: Response, next: NextFunction) => {
     const status = err.status || 500;
     const message = err.message || 'Internal Server Error';
