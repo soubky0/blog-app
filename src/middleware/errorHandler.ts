@@ -1,15 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import pino from 'pino';
-
-const logger = pino({
-    transport: {
-        target: 'pino-pretty',
-        options: {
-            colorize: true,
-            ignore: 'hostname,pid',
-        }
-    }
-});
+import {logger} from "../index";
 export class HttpError extends Error {
     status?: number;
     constructor(message: string, status: number) {

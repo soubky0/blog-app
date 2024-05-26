@@ -3,6 +3,17 @@ import rootRouter from './routes/index';
 import { PORT } from './secrets'
 import cookieParser from 'cookie-parser';
 import {errorHandler} from "./middleware/errorHandler";
+import pino from 'pino';
+
+export const logger = pino({
+    transport: {
+        target: 'pino-pretty',
+        options: {
+            colorize: true,
+            ignore: 'hostname,pid',
+        }
+    }
+});
 
 const app = express();
 app.use(express.json());
