@@ -1,0 +1,17 @@
+meta {
+  name: createComment
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://localhost:8080/api/posts/1/comments
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "content": "comment 1"
+  }
+}
