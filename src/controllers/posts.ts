@@ -1,13 +1,14 @@
-import { Request, Response } from "express";
+import {NextFunction, Request, Response} from "express";
 import  prisma  from "../prisma"
+import {HttpError} from "../middleware/errorHandler";
 
-export const createPost = async (req: Request, res: Response) => {
+export const createPost = async (req: Request, res: Response, next: NextFunction) => {
     const { userId, title, content } = req.body;
     if (!title) {
-        return res.status(400).json({error: "Title is required!"})
+        return next(new HttpError("Title is required!", 400));
     }
     if (!content) {
-        return res.status(400).json({error: "Content is required!"})
+        return next(new HttpError("Content is required!", 400));
     }
     try {
         const newPost = await prisma.post.create({
@@ -15,20 +16,20 @@ export const createPost = async (req: Request, res: Response) => {
         })
         return res.status(201).json({title:newPost.title, content:newPost.content})
     } catch (error) {
-        return res.status(500).json(error)
+        next(error)
     }
 }
 
-export const getAllPosts = async (req: Request, res: Response) => {
+export const getAllPosts = async (req: Request, res: Response, next: NextFunction) => {
     try{
         const posts = await prisma.post.findMany();
         return res.status(200).json(posts)
     } catch (error) {
-        return res.status(500).json(error)
+        next(error)
     }
 }
 
-export const getPost = async (req: Request, res: Response) => {
+export const getPost = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const postId: number = Number(req.params.id);
         const post = await prisma.post.findUnique({
@@ -36,14 +37,14 @@ export const getPost = async (req: Request, res: Response) => {
             }
         )
         if (!post) {
-            return res.status(404).json({error: `Post with id ${postId} not found`})
+            return next(new HttpError(`Post with id ${postId} not found`,404))
         }
         return res.status(200).json(post);
     } catch (error) {
-        return res.status(500).json(error)
+        next(error)
     }
 }
-export const updatePost = async (req: Request, res: Response) => {
+export const updatePost = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const postId: number = Number(req.params.id);
         const { userId, userRole, title, content } = req.body;
@@ -53,10 +54,10 @@ export const updatePost = async (req: Request, res: Response) => {
         });
 
         if (!post) {
-            return res.status(404).json({ error: `Post with id ${postId} not found` });
+            return next(new HttpError(`Post with id ${postId} not found`,404))
         }
         if ((post.userId !== parseInt(userId)) && (userRole === "USER")) {
-            return res.status(403).json({ error: 'You do not have permission to update this post' });
+            return next(new HttpError('You do not have permission to update this post', 403));
         }
         const updatedPost = await prisma.post.update({
             where: { id: postId },
@@ -64,12 +65,11 @@ export const updatePost = async (req: Request, res: Response) => {
         });
         return res.status(200).json(updatedPost);
     } catch (error) {
-        console.error(error)
-        return res.status(500).json(error);
+        next(error)
     }
 }
 
-export const deletePost = async (req: Request, res: Response) => {
+export const deletePost = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const postId: number = Number(req.params.id);
         const { userId, userRole } = req.body;
@@ -79,17 +79,16 @@ export const deletePost = async (req: Request, res: Response) => {
         });
 
         if (!post) {
-            return res.status(404).json({ error: 'Post not found' });
+            return next(new HttpError(`Post with id ${postId} not found`,404))
         }
         if ((post.userId !== parseInt(userId)) && (userRole === "USER")) {
-            return res.status(403).json({ error: 'You do not have permission to delete this post' });
+            return next(new HttpError('You do not have permission to update this post', 403));
         }
         const deletedPost = await prisma.post.delete({
             where: { id: postId }
         });
         return res.status(204)
     } catch (error) {
-        console.error(error)
-        return res.status(500).json(error);
+        next(error)
     }
 }

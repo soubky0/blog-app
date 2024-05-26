@@ -1,30 +1,30 @@
-import { Request, Response } from "express";
+import {NextFunction, Request, Response} from "express";
 import  prisma  from "../prisma"
+import {HttpError} from "../middleware/errorHandler";
 
-export const createComment = async (req: Request, res: Response) => {
-    const postId: number = Number(req.params.postId)
-    const { userId, content } = req.body;
-    if (!content) {
-        return res.status(400).json({error: "Content is required!"})
-    }
+export const createComment = async (req: Request, res: Response, next: NextFunction) => {
     try {
+        const postId: number = Number(req.params.postId)
+        const { userId, content } = req.body;
+        if (!content) {
+            return next(new HttpError("Content is required!", 400));
+        }
         const post = await prisma.post.findUnique({
             where:{id: postId}
         })
         if (!post) {
-            return res.status(404).json({error: `Post with id ${postId} not found`})
+            return next(new HttpError(`Post with id ${postId} not found`, 404));
         }
         const newComment = await prisma.comment.create({
             data: {content, postId: post.id, userId}
         })
         return res.status(201).json({ content:newComment.content })
     } catch (error) {
-        console.error(error)
-        return res.status(500).json(error)
+        next(error);
     }
 }
 
-export const getAllComments = async (req: Request, res: Response) => {
+export const getAllComments = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const postId: number = Number(req.params.postId);
         const post = await prisma.post.findUnique({
@@ -32,19 +32,18 @@ export const getAllComments = async (req: Request, res: Response) => {
             }
         )
         if (!post) {
-            return res.status(404).json({error: `Post with id ${postId} not found`})
+            return next(new HttpError(`Post with id ${postId} not found`, 404));
         }
         const comments = await prisma.comment.findMany({
             where: {postId: post.id}
         })
         return res.status(200).json(comments);
     } catch (error) {
-        console.log(error)
-        return res.status(500).json(error)
+        next(error)
     }
 }
 
-export const updateComment = async (req: Request, res: Response) => {
+export const updateComment = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const commentId: number = Number(req.params.id);
         const { userId, userRole, content } = req.body;
@@ -54,10 +53,10 @@ export const updateComment = async (req: Request, res: Response) => {
         });
 
         if (!comment) {
-            return res.status(404).json({ error: `Comment with id ${commentId} not found` });
+            return next(new HttpError(`Comment with id ${commentId} not found`, 404));
         }
         if ((comment.userId !== parseInt(userId)) && (userRole === "USER")) {
-            return res.status(403).json({ error: 'You do not have permission to update this post' });
+            return next(new HttpError('You do not have permission to update this comment', 403));
         }
         const updatedComment = await prisma.comment.update({
             where: { id: commentId },
@@ -65,12 +64,11 @@ export const updateComment = async (req: Request, res: Response) => {
         });
         return res.status(200).json(updatedComment);
     } catch (error) {
-        console.error(error)
-        return res.status(500).json(error);
+        next(error)
     }
 }
 
-export const deleteComment = async (req: Request, res: Response) => {
+export const deleteComment = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const commentId: number = Number(req.params.id);
         const { userId, userRole } = req.body;
@@ -80,17 +78,16 @@ export const deleteComment = async (req: Request, res: Response) => {
         });
 
         if (!comment) {
-            return res.status(404).json({ error: `Comment with id ${commentId} not found` });
+            return next(new HttpError(`Comment with id ${commentId} not found`, 404));
         }
         if ((comment.userId !== parseInt(userId)) && (userRole === "USER")) {
-            return res.status(403).json({ error: 'You do not have permission to delete this post' });
+            return next(new HttpError('You do not have permission to update this comment', 403));
         }
         const deletedPost = await prisma.comment.delete({
             where: { id: commentId }
         });
         return res.status(204)
     } catch (error) {
-        console.error(error)
-        return res.status(500).json(error);
+        next(error)
     }
 }
