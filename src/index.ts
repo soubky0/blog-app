@@ -3,8 +3,8 @@ import rootRouter from './routes/index';
 import { PORT } from './secrets'
 import cookieParser from 'cookie-parser';
 import {errorHandler} from "./middleware/errorHandler";
-const app = express();
 
+const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
