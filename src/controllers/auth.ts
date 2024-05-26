@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import {JWT_SECRET} from "../secrets";
 import {HttpError} from "../middleware/errorHandler";
+import {logger} from "../index";
 
 export const register = async (req: Request, res: Response, next: NextFunction) => {
     const { username, email, password } = req.body;
@@ -52,6 +53,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
                 return next(new HttpError('Wrong password!', 401))
             const token = jwt.sign({ userId: user.id, userRole: user.role }, JWT_SECRET, {expiresIn: '15m'});
             res = res.cookie('token', token);
+            logger.info(`User ${user.username} Login`)
             return res.status(200).json({token})
         } catch (error) {
             next(error)

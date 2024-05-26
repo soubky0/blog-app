@@ -1,7 +1,8 @@
 import {NextFunction, Request, Response} from "express";
 import  prisma  from "../prisma"
 import {HttpError} from "../middleware/errorHandler";
-
+import {client} from "../redisClient";
+import {logger} from "../index";
 export const createPost = async (req: Request, res: Response, next: NextFunction) => {
     const { userId, title, content } = req.body;
     if (!title) {
@@ -14,20 +15,30 @@ export const createPost = async (req: Request, res: Response, next: NextFunction
         const newPost = await prisma.post.create({
             data: { userId, title, content }
         })
-        return res.status(201).json({title:newPost.title, content:newPost.content})
+        logger.info(`Post ${newPost.id} created by user ${userId}`)
+        return res.status(201).json({id:newPost.id, title:newPost.title, content:newPost.content})
     } catch (error) {
         next(error)
     }
 }
 
 export const getAllPosts = async (req: Request, res: Response, next: NextFunction) => {
-    try{
+    try {
+        const cachedPosts = await client.get('posts');
+        if (cachedPosts) {
+            return res.status(200).json(JSON.parse(cachedPosts));
+        }
+
         const posts = await prisma.post.findMany();
-        return res.status(200).json(posts)
+        await client.set('posts', JSON.stringify(posts), {
+            EX: 3600,
+        });
+
+        return res.status(200).json(posts);
     } catch (error) {
-        next(error)
+        next(error);
     }
-}
+};
 
 export const getPost = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -87,7 +98,7 @@ export const deletePost = async (req: Request, res: Response, next: NextFunction
         const deletedPost = await prisma.post.delete({
             where: { id: postId }
         });
-        return res.status(204)
+        return res.status(204).json(deletedPost)
     } catch (error) {
         next(error)
     }

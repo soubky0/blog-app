@@ -18,7 +18,7 @@ export const createComment = async (req: Request, res: Response, next: NextFunct
         const newComment = await prisma.comment.create({
             data: {content, postId: post.id, userId}
         })
-        return res.status(201).json({ content:newComment.content })
+        return res.status(201).json({ id:newComment.id, content:newComment.content })
     } catch (error) {
         next(error);
     }
@@ -83,10 +83,10 @@ export const deleteComment = async (req: Request, res: Response, next: NextFunct
         if ((comment.userId !== parseInt(userId)) && (userRole === "USER")) {
             return next(new HttpError('You do not have permission to update this comment', 403));
         }
-        const deletedPost = await prisma.comment.delete({
+        const deletedComment = await prisma.comment.delete({
             where: { id: commentId }
         });
-        return res.status(204)
+        return res.status(204).json(deletedComment)
     } catch (error) {
         next(error)
     }

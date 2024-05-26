@@ -4,6 +4,7 @@ import { PORT } from './secrets'
 import cookieParser from 'cookie-parser';
 import {errorHandler} from "./middleware/errorHandler";
 import pino from 'pino';
+import {connectRedis} from "./redisClient";
 
 export const logger = pino({
     transport: {
@@ -23,6 +24,10 @@ app.use(cookieParser());
 app.use('/api', rootRouter)
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-    console.log(`Server is running at http://localhost:${PORT}`);
-});
+connectRedis().then(() => {
+    app.listen(PORT, () => {
+        console.log(`Server is running at http://localhost:${PORT}`);
+    });
+}).catch(() => {
+    console.error("Redis Failed")
+})
