@@ -17,7 +17,7 @@
     "typescript": "^5.4.5"
   },
   "scripts": {
-    "start": "nodemon",
+    "start": "ts-node ./src/server.ts",
     "test": "jest"
   },
   "keywords": [],
