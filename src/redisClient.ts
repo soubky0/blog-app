@@ -1,8 +1,9 @@
 import { createClient } from 'redis';
 import logger from "./logger";
+import {REDIS_URL} from "./secrets";
 
 const client = createClient({
-    url: process.env.REDIS_URL,
+    url: REDIS_URL,
 });
 
 client.on('error', (err) => {

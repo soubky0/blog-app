@@ -18,7 +18,9 @@
   },
   "scripts": {
     "start": "ts-node ./src/server.ts",
-    "test": "jest"
+    "test": "jest",
+    "dev": "nodemon",
+    "migrate": "npx prisma migrate dev --name blog"
   },
   "keywords": [],
   "author": "",

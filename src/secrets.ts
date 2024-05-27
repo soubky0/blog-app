@@ -4,3 +4,4 @@ export const PORT = process.env.PORT || 8080;
 export const JWT_SECRET = process.env.JWT_SECRET || 'your-default-jwt-secret';
 export const START_PRISMA_STUDIO = process.env.START_PRISMA_STUDIO === 'true';
 export const PRISMA_STUDIO_PORT = process.env.PRISMA_STUDIO_PORT || 9090;
+export const REDIS_URL = process.env.REDIS_URL || "redis://localhost:6379";
