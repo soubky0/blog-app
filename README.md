@@ -55,13 +55,13 @@ npm test
 
 The API documentation is available [here](https://documenter.getpostman.com/view/33109124/2sA3QqhDkg).
 
-####User Endpoints
+#### User Endpoints
 
 - Register: POST /api/register
 - Login: POST /api/login
 - Get User Profile: GET /api/users/:id
 
-####Post Endpoints
+#### Post Endpoints
 
 - Create Post: POST /api/posts
 - Get All Posts: GET /api/posts
