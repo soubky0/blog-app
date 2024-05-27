@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import {JWT_SECRET} from "../secrets";
 import {HttpError} from "../middleware/errorHandler";
-import {logger} from "../index";
+import {logger} from "../logger";
 
 export const register = async (req: Request, res: Response, next: NextFunction) => {
     const { username, email, password } = req.body;

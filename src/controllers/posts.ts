@@ -2,7 +2,7 @@ import {NextFunction, Request, Response} from "express";
 import  prisma  from "../prisma"
 import {HttpError} from "../middleware/errorHandler";
 import {client} from "../redisClient";
-import {logger} from "../index";
+import {logger} from "../logger";
 export const createPost = async (req: Request, res: Response, next: NextFunction) => {
     const { userId, title, content } = req.body;
     if (!title) {

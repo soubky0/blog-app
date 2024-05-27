@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { START_PRISMA_STUDIO, PRISMA_STUDIO_PORT } from './secrets'
 import { exec } from 'child_process';
-import {logger} from "./index";
+import {logger} from "./logger";
 const prisma = new PrismaClient();
 
 prisma.$use(async (params, next) => {

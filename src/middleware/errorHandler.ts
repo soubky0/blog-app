@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import {logger} from "../index";
+import {logger} from "../logger";
 export class HttpError extends Error {
     status?: number;
     constructor(message: string, status: number) {
