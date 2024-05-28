@@ -25,12 +25,12 @@
 ``` bash
 npm install
 ```
-2. Create a database using psql or pgadmin (you can skip if you have an exisiting db) 
+2. Create a database using psql or pgadmin (you can skip if you have an existing db) 
 3. Create a .env file using .env.example:
    - **PORT** is the port that the app would run on
    - **DATABASE_URL** use your username in USERNAME placeholder, password in PASSWORD, and the database name you created instead of DATABASE_NAME
    - **JWT_SECRET** is used in encrypting the jwt token
-   - **START_PRISMA_STUDIO** change it to true if you want to use prisma studio it runs a ui that visualizes data in the database
+   - **START_PRISMA_STUDIO** change it to true if you want a web ui that visualizes the database
    - **PRISMA_STUDIO_PORT=9090** is the port that would prisma studio would run in
 4. Generate prisma client and run migrations
 ``` bash
