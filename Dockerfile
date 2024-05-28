@@ -10,8 +10,6 @@ COPY . .
 
 RUN npx prisma generate
 
-CMD ["npm", "run", "migrate"]
-
-CMD ["npm", "start"]
+CMD npm run migrate && npm start
 
 EXPOSE ${PORT}

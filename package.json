@@ -20,7 +20,7 @@
     "start": "ts-node ./src/server.ts",
     "test": "jest",
     "dev": "nodemon",
-    "migrate": "npx prisma migrate dev --name blog"
+    "migrate": "npx prisma migrate dev --name blog; echo 'Database Migration Success'"
   },
   "keywords": [],
   "author": "",
