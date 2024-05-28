@@ -10,10 +10,10 @@
 
 1. Create a .env file using .env.docker.example:
     - **PORT** is the port that the app would run on
-    - **DATABASE_URL** contains db info that prisma client would run onto so make sure that it has the same credentials as the following env variables and use db instead of localhost.
     - **POSTGRES_USER** is the username used in the postgres docker image
     - **POSTGRES_PASSWORD** is the password used in the postgres docker image
     - **POSTGRES_DB** is the db name that would be created in the postgres docker image
+    - **DATABASE_URL** contains db info that prisma client would run onto so make sure that it has the same credentials as the env variables and use "db" instead of "localhost" as hostname.
     - **REDIS_URL** is the url for the redis docker image
     - **JWT_SECRET** is used in encrypting the jwt token
 2. Run the docker compose build command:
